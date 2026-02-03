@@ -1,0 +1,80 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+}
+
+model User {
+  id        Int @id @default(autoincrement())
+  name      String
+  email     String @unique
+  password  String
+  role      Role @default(USER)
+
+  bookings  Booking[]
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Field {
+  id          Int @id @default(autoincrement())
+  name        String @unique
+  description String?
+  price       Int
+
+  slots       TimeSlot[]
+  bookings    Booking[]
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+} 
+
+model TimeSlot {
+  id        Int      @id @default(autoincrement())
+  fieldId   Int
+  startTime DateTime
+  endTime   DateTime
+
+  field     Field    @relation(fields: [fieldId], references: [id])
+  booking   Booking?
+
+  createdAt DateTime @default(now())
+
+  @@unique([fieldId, startTime, endTime])
+}
+
+model Booking {
+  id        Int           @id @default(autoincrement())
+  userId    Int
+  fieldId   Int
+  slotId    Int           @unique
+  status    BookingStatus @default(PENDING)
+
+  user      User          @relation(fields: [userId], references: [id])
+  field     Field         @relation(fields: [fieldId], references: [id])
+  slot      TimeSlot      @relation(fields: [slotId], references: [id])
+
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+}
