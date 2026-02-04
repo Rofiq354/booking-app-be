@@ -7,6 +7,7 @@ import {
   getSlotsController,
 } from "../controllers/time-slots";
 import {
+  deleteField,
   getAllField,
   handleCreateField,
   updateField,
@@ -18,7 +19,8 @@ router.post("/admin/create", authenticate, isAdmin, handleCreateAdmin);
 // field
 router.post("/field", authenticate, isAdmin, handleCreateField);
 router.get("/field", authenticate, isAdmin, getAllField);
-router.patch("/field/:id", authenticate, isAdmin, updateField);
+router.put("/field/:id", authenticate, isAdmin, updateField);
+router.delete("/field/:id", authenticate, isAdmin, deleteField);
 
 // time
 router.post("/timeslot/:fieldId", authenticate, isAdmin, createSlotsController);

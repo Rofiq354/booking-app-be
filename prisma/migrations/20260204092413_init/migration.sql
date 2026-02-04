@@ -66,7 +66,7 @@ CREATE UNIQUE INDEX "TimeSlot_fieldId_startTime_endTime_key" ON "public"."TimeSl
 CREATE UNIQUE INDEX "Booking_slotId_key" ON "public"."Booking"("slotId");
 
 -- AddForeignKey
-ALTER TABLE "public"."TimeSlot" ADD CONSTRAINT "TimeSlot_fieldId_fkey" FOREIGN KEY ("fieldId") REFERENCES "public"."Field"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "public"."TimeSlot" ADD CONSTRAINT "TimeSlot_fieldId_fkey" FOREIGN KEY ("fieldId") REFERENCES "public"."Field"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "public"."Booking" ADD CONSTRAINT "Booking_userId_fkey" FOREIGN KEY ("userId") REFERENCES "public"."User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

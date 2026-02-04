@@ -1,3 +1,4 @@
+import { NextFunction } from "express";
 import { AppError } from "../errors/AppError";
 import { prisma } from "../prisma/client";
 

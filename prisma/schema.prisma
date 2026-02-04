@@ -56,7 +56,7 @@ model TimeSlot {
   startTime DateTime
   endTime   DateTime
 
-  field     Field    @relation(fields: [fieldId], references: [id])
+  field     Field    @relation(fields: [fieldId], references: [id], onDelete: Cascade)
   booking   Booking?
 
   createdAt DateTime @default(now())

@@ -22,8 +22,11 @@ export const handleCreateField = async (
       },
     });
   } catch (error) {
-    console.error(error);
-    next(new AppError("Failed to create Field", 500));
+    if (error instanceof AppError) {
+      next(error);
+    } else {
+      next(new AppError("Failed to Create Field", 500));
+    }
   }
 };
 
@@ -77,5 +80,26 @@ export const updateField = async (
       console.error(error);
       next(new AppError("Failed to Edit Field", 500));
     }
+  }
+};
+
+export const deleteField = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const id = Number(req.params.id);
+
+    const deletefield = await prisma.field.delete({
+      where: { id },
+    });
+    res.status(200).json({
+      status: "success",
+      message: "Field successfully deleted",
+    });
+  } catch (error) {
+    console.error(error);
+    next(new AppError("failed to delete field", 500));
   }
 };
