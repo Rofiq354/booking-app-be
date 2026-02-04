@@ -104,8 +104,8 @@ export const handleLoginUser = async (
       });
     }
 
-    const { email, passsword } = value;
-    const user = await loginUser(email, passsword);
+    const { email, password } = value;
+    const user = await loginUser(email, password);
 
     res.cookie("token", user.token, {
       httpOnly: true,

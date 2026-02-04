@@ -3,15 +3,18 @@ import { createTimeSlots, getFieldTimeSlots } from "../services/time-slot";
 import { prisma } from "../prisma/client";
 import { AppError } from "../errors/AppError";
 
-export const createAndGetSlotsController = async (
+export const createSlotsController = async (
   req: Request,
   res: Response,
   next: NextFunction,
 ) => {
   try {
-    const { fieldId, date, startHour, endHour } = req.body;
+    const fieldId = Number(req.params.fieldId);
 
-    if (!fieldId || !date || startHour === undefined || endHour === undefined) {
+    const { date, startHour, endHour } = req.body;
+    if (isNaN(fieldId))
+      return next(new AppError("fieldId must be a number", 400));
+    if (!date || startHour === undefined || endHour === undefined) {
       return next(
         new AppError("fieldId, date, startHour, endHour are required", 400),
       );
@@ -35,6 +38,7 @@ export const createAndGetSlotsController = async (
       data: {
         id: field.id,
         name: field.name,
+        description: field.description,
         price: field.price,
         slots,
       },

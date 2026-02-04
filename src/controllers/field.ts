@@ -21,6 +21,7 @@ export const handleCreateField = async (
       },
     });
   } catch (error) {
+    console.error(error);
     next(new AppError("Failed to create Field", 500));
   }
 };

@@ -9,8 +9,7 @@ export const main = async () => {
   });
 
   if (existingAdmin) {
-    console.log("email sudah terdaftar");
-    return;
+    throw new Error("email sudah terdaftar");
   }
 
   const hashed = await bcrypt.hash("admin123", 10);

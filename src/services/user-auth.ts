@@ -58,15 +58,18 @@ export const registerAdmin = async (
 };
 
 export const loginUser = async (email: string, password: string) => {
+  if (!email || !password) throw new Error("Email and password are required");
+
   const user = await prisma.user.findUnique({ where: { email } });
   if (!user) throw new Error("User not found");
+
+  if (!user.password) throw new Error("User has no password set");
 
   const isMatch = await bcrypt.compare(password, user.password);
   if (!isMatch) throw new Error("Wrong Password");
 
   const token = signToken({
     id: user.id,
-
     role: user.role,
   });
   return {
