@@ -11,7 +11,19 @@ import cors from "cors";
 const app = express();
 const PORT = process.env.PORT || 4000;
 
-app.use(cors());
+app.use(
+  cors({
+    // 1. Ganti '*' menjadi origin yang spesifik
+    origin: "http://localhost:5173",
+
+    // 2. Izinkan pengiriman cookie/credentials
+    credentials: true,
+
+    // 3. (Opsional) Tambahkan method yang diizinkan agar preflight tidak gagal
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  }),
+);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());

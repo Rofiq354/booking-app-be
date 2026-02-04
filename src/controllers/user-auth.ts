@@ -64,10 +64,21 @@ export const handleCreateAdmin = async (
 ) => {
   try {
     const { error } = RegisterSchema.validate(req.body);
-    if (error)
-      return res
-        .status(500)
-        .json({ status: "error", message: "Invalid Register Admin" });
+    if (error) {
+      const errors = error?.details.reduce(
+        (acc: Record<string, string>, detail) => {
+          const key = detail.path[0] as string;
+          acc[key] = detail.message;
+          return acc;
+        },
+        {},
+      );
+      return res.status(400).json({
+        code: 400,
+        success: false,
+        message: errors,
+      });
+    }
 
     const { name, email, password } = req.body;
     const admin = await registerAdmin(name, email, password);
@@ -130,12 +141,9 @@ export const handleLoginUser = async (
     res.status(201).json({
       success: true,
       message: "Login Successfull",
-      data: {
-        user,
-      },
+      data: user,
     });
   } catch (error) {
-    console.error(error);
     if (error instanceof AppError) {
       next(error);
     } else {
@@ -172,5 +180,5 @@ export const userLogout = (req: Request, res: Response, next: NextFunction) => {
     expires: new Date(0),
   });
 
-  res.status(200).json({ message: "Logout Berhasil" });
+  res.status(200).json({ status: "success", message: "Logout Berhasil" });
 };

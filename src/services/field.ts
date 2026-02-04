@@ -10,7 +10,7 @@ export const createField = async (
     where: { name },
   });
   if (existingField) {
-    throw new AppError("The field name is already available.", 400);
+    throw new AppError("The field name is already available.", 409);
   }
   const field = await prisma.field.create({
     data: {
@@ -26,5 +26,34 @@ export const createField = async (
     price: field.price,
     created_at: field.createdAt,
     updated_at: field.updatedAt,
+  };
+};
+
+export const editField = async (
+  id: number,
+  name: string,
+  description: string | null,
+  price: number,
+) => {
+  const field = await prisma.field.findUnique({
+    where: { id },
+  });
+
+  if (!field) throw new AppError("field not found", 404);
+
+  const editField = await prisma.field.update({
+    where: { id },
+    data: {
+      name,
+      description,
+      price,
+    },
+  });
+
+  return {
+    id: editField.id,
+    name: editField.name,
+    description: editField.description,
+    price: editField.price,
   };
 };

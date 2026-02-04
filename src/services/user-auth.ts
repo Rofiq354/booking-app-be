@@ -38,7 +38,7 @@ export const registerAdmin = async (
   const existingUser = await prisma.user.findUnique({ where: { email } });
 
   if (existingUser) {
-    throw new Error("Email already registered");
+    throw new AppError("Email already registered", 409);
   }
 
   const hashed = await bcrypt.hash(password, 10);
@@ -61,12 +61,12 @@ export const loginUser = async (email: string, password: string) => {
   if (!email || !password) throw new Error("Email and password are required");
 
   const user = await prisma.user.findUnique({ where: { email } });
-  if (!user) throw new AppError("User not found", 400);
+  if (!user) throw new AppError("User not found", 404);
 
   if (!user.password) throw new Error("User has no password set");
 
   const isMatch = await bcrypt.compare(password, user.password);
-  if (!isMatch) throw new AppError("Wrong Password", 400);
+  if (!isMatch) throw new AppError("Wrong Password", 401);
 
   const token = signToken({
     id: user.id,
@@ -86,7 +86,7 @@ export const getUserLogin = async (userId: number) => {
     where: { id: userId },
     select: { id: true, name: true, email: true, role: true },
   });
-  if (!user) throw new AppError("User not found", 400);
+  if (!user) throw new AppError("User not found", 404);
   return {
     user,
   };
