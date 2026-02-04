@@ -12,6 +12,7 @@ import {
   handleCreateField,
   updateField,
 } from "../controllers/field";
+import { getAllBooking } from "../controllers/booking";
 
 const router = express.Router();
 
@@ -25,5 +26,8 @@ router.delete("/field/:id", authenticate, isAdmin, deleteField);
 // time
 router.post("/timeslot/:fieldId", authenticate, isAdmin, createSlotsController);
 router.get("/timeslot/:fieldId", authenticate, isAdmin, getSlotsController);
+
+// booking
+router.get("/booking", getAllBooking);
 
 export default router;

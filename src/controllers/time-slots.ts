@@ -62,6 +62,7 @@ export const getSlotsController = async (
 
     res.status(200).json({
       status: "success",
+      message: "Get slot time field ",
       data: {
         id: field.id,
         name: field.name,

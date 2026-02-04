@@ -38,7 +38,13 @@ export const getAllField = async (
   try {
     const field = await prisma.field.findMany({
       orderBy: { createdAt: "desc" },
-      select: { id: true, name: true, description: true, price: true },
+      select: {
+        id: true,
+        name: true,
+        description: true,
+        price: true,
+        slots: true,
+      },
     });
     res.status(200).json({
       status: "success",
