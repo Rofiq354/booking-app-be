@@ -12,7 +12,11 @@ import {
   handleCreateField,
   updateField,
 } from "../controllers/field";
-import { getAllBooking } from "../controllers/booking";
+import {
+  approveBooking,
+  getAllBooking,
+  rejectBooking,
+} from "../controllers/booking";
 
 const router = express.Router();
 
@@ -30,5 +34,7 @@ router.get("/timeslot/:fieldId", authenticate, isAdmin, getSlotsController);
 
 // booking
 router.get("/booking", authenticate, isAdmin, getAllBooking);
+router.patch("/booking/:id/approve", authenticate, isAdmin, approveBooking);
+router.patch("/booking/:id/cancel", authenticate, isAdmin, rejectBooking);
 
 export default router;
