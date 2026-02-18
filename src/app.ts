@@ -14,7 +14,7 @@ const PORT = process.env.PORT || 4000;
 app.use(
   cors({
     // 1. Ganti '*' menjadi origin yang spesifik
-    origin: "http://localhost:5173",
+    origin: ["http://localhost:5173", "http://localhost:4173"],
 
     // 2. Izinkan pengiriman cookie/credentials
     credentials: true,

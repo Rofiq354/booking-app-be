@@ -20,6 +20,7 @@ export function errorHandler(
   return res.status(error.statusCode).json({
     code: error.statusCode,
     status: error.status,
+    success: error.success,
     message: error.message,
   });
 }
