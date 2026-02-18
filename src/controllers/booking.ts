@@ -7,6 +7,7 @@ import {
 } from "../services/booking";
 import { AppError } from "../errors/AppError";
 import { prisma } from "../prisma/client";
+import { sendEmail } from "../utils/email";
 
 export const createBooking = async (
   req: AuthRequest,
@@ -18,6 +19,19 @@ export const createBooking = async (
     const { fieldId, slotId } = req.body;
 
     const booking = await bookingField(userId, fieldId, slotId);
+
+    try {
+      await sendEmail(
+        booking.user.email,
+        booking.field.name,
+        booking.slot.startTime,
+        booking.slot.endTime,
+        booking.field.price,
+      );
+    } catch (error) {
+      console.error("Email gagal dikirim:", error);
+    }
+
     res.status(201).json({
       status: "success",
       message: "Booking created successfully",
@@ -148,5 +162,30 @@ export const userCancelBooking = async (
     } else {
       next(new AppError("Failed to cancel booking", 500));
     }
+  }
+};
+
+export const getAllUserPending = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const user = await prisma.booking.findMany({
+      where: { status: "PENDING" },
+      include: {
+        user: { select: { name: true, email: true } },
+        field: { select: { name: true, price: true } },
+        slot: { select: { startTime: true, endTime: true } },
+      },
+    });
+
+    res.status(200).json({
+      status: "success",
+      message: "Get All User Booking Pending",
+      data: user,
+    });
+  } catch (error) {
+    next(new AppError("Failed to get Pending User", 500));
   }
 };

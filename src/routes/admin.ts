@@ -15,6 +15,7 @@ import {
 import {
   approveBooking,
   getAllBooking,
+  getAllUserPending,
   rejectBooking,
 } from "../controllers/booking";
 
@@ -33,6 +34,7 @@ router.post("/timeslot/:fieldId", authenticate, isAdmin, createSlotsController);
 router.get("/timeslot/:fieldId", authenticate, isAdmin, getSlotsController);
 
 // booking
+router.get("/user/pending", authenticate, isAdmin, getAllUserPending);
 router.get("/booking", authenticate, isAdmin, getAllBooking);
 router.patch("/booking/:id/approve", authenticate, isAdmin, approveBooking);
 router.patch("/booking/:id/cancel", authenticate, isAdmin, rejectBooking);
