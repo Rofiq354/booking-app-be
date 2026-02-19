@@ -17,7 +17,7 @@ export const createEmail = (
   endTime: Date,
   price: number,
 ) => ({
-  from: process.env.MAIL_USER,
+  from: `"FutsalHub" <${process.env.MAIL_USER}>`,
   to: email,
   subject: "Konfirmasi Booking Lapangan Futsal",
   html: `

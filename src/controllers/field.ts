@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { createField, editField } from "../services/field";
 import { AppError } from "../errors/AppError";
 import { prisma } from "../prisma/client";
+import cloudinary from "../utils/cloudinary";
 
 export const handleCreateField = async (
   req: Request,
@@ -10,16 +11,25 @@ export const handleCreateField = async (
 ) => {
   try {
     const { name, description, price } = req.body;
-    const field = await createField(name, description, price);
+    let imageUrl: string | null = null;
+    if (req.file) {
+      const uploadPromise = new Promise((resolve, reject) => {
+        const uploadStream = cloudinary.uploader.upload_stream(
+          { folder: "fields" },
+          (error, result) => {
+            if (error) reject(error);
+            else resolve(result?.secure_url);
+          },
+        );
+        uploadStream.end(req.file!.buffer);
+      });
+      imageUrl = (await uploadPromise) as string;
+    }
+    const field = await createField(name, description, Number(price), imageUrl);
     res.status(201).json({
       status: "success",
       message: "create field success",
-      data: {
-        id: field.id,
-        name: field.name,
-        description: field.description,
-        price: field.price,
-      },
+      data: field,
     });
   } catch (error) {
     if (error instanceof AppError) {

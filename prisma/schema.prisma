@@ -42,6 +42,7 @@ model Field {
   name        String @unique
   description String?
   price       Int
+  image       String?
 
   slots       TimeSlot[]
   bookings    Booking[]

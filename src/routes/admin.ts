@@ -18,13 +18,20 @@ import {
   getAllUserPending,
   rejectBooking,
 } from "../controllers/booking";
+import upload from "../middlewares/upload";
 
 const router = express.Router();
 
 router.get("/admin", authenticate, isAdmin, handleGetAdmins);
 router.post("/admin/create", authenticate, isAdmin, handleCreateAdmin);
 // field
-router.post("/field", authenticate, isAdmin, handleCreateField);
+router.post(
+  "/field",
+  authenticate,
+  isAdmin,
+  upload.single("image"),
+  handleCreateField,
+);
 router.get("/field", authenticate, isAdmin, getAllField);
 router.put("/field/:id", authenticate, isAdmin, updateField);
 router.delete("/field/:id", authenticate, isAdmin, deleteField);

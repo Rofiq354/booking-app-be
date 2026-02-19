@@ -5,6 +5,7 @@ export const createField = async (
   name: string,
   description: string | null,
   price: number,
+  image: string | null,
 ) => {
   const existingField = await prisma.field.findUnique({
     where: { name },
@@ -17,6 +18,7 @@ export const createField = async (
       name,
       description,
       price,
+      image,
     },
   });
   return {
@@ -24,6 +26,7 @@ export const createField = async (
     name: field.name,
     description: field.description,
     price: field.price,
+    image: field.image,
     created_at: field.createdAt,
     updated_at: field.updatedAt,
   };
