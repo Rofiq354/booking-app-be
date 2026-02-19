@@ -29,7 +29,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 app.use("/api", userAuth);
-app.use("/api", adminAuth);
+app.use("/api/admin", adminAuth);
 
 app.use(errorHandler);
 

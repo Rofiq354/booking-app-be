@@ -31,6 +31,7 @@ model User {
   password  String
   role      Role @default(USER)
 
+  reviews Review[]
   bookings  Booking[]
 
   createdAt DateTime  @default(now())
@@ -44,12 +45,26 @@ model Field {
   price       Int
   image       String?
 
+  reviews     Review[]
   slots       TimeSlot[]
   bookings    Booking[]
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 } 
+
+model Review {
+  id        Int      @id @default(autoincrement())
+  rating    Int      
+  comment   String?
+  userId    Int
+  fieldId   Int
+  
+  user      User     @relation(fields: [userId], references: [id])
+  field     Field    @relation(fields: [fieldId], references: [id])
+
+  createdAt DateTime @default(now())
+}
 
 model TimeSlot {
   id        Int      @id @default(autoincrement())

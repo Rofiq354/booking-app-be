@@ -12,6 +12,8 @@ import {
   userCancelBooking,
 } from "../controllers/booking";
 import { isUser } from "../middlewares/authUser";
+import { getAllField, getDetailField } from "../controllers/field";
+import { getSlotsController } from "../controllers/time-slots";
 
 const router = express.Router();
 
@@ -24,5 +26,12 @@ router.post("/user/logout", authenticate, userLogout);
 router.get("/booking/userBookings", authenticate, getUserBooking);
 router.post("/booking", authenticate, isUser, createBooking);
 router.patch("/booking/:id/cancel", authenticate, isUser, userCancelBooking);
+
+//field
+router.get("/field", authenticate, getAllField);
+router.get("/field/:id", authenticate, getDetailField);
+
+//time
+router.get("/timeslot/:fieldId", authenticate, getSlotsController);
 
 export default router;

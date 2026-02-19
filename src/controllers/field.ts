@@ -54,6 +54,7 @@ export const getAllField = async (
         description: true,
         price: true,
         slots: true,
+        image: true,
       },
     });
     res.status(200).json({
@@ -137,5 +138,32 @@ export const deleteField = async (
   } catch (error) {
     console.error(error);
     next(new AppError("failed to delete field", 500));
+  }
+};
+
+export const getDetailField = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const id = Number(req.params.id);
+    if (isNaN(id)) return next(new AppError("Invalid Field id", 400));
+
+    const field = await prisma.field.findUnique({
+      where: { id },
+      include: {
+        slots: {
+          orderBy: { startTime: "asc" },
+        },
+      },
+    });
+    res.status(200).json({
+      status: "success",
+      message: "Get detail field successfully",
+      data: field,
+    });
+  } catch (error) {
+    next(new AppError("failed to get detail field", 500));
   }
 };

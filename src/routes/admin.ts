@@ -32,7 +32,7 @@ router.post(
   upload.single("image"),
   handleCreateField,
 );
-router.get("/field", authenticate, isAdmin, getAllField);
+
 router.put(
   "/field/:id",
   authenticate,
@@ -44,7 +44,6 @@ router.delete("/field/:id", authenticate, isAdmin, deleteField);
 
 // time
 router.post("/timeslot/:fieldId", authenticate, isAdmin, createSlotsController);
-router.get("/timeslot/:fieldId", authenticate, isAdmin, getSlotsController);
 
 // booking
 router.get("/user/pending", authenticate, isAdmin, getAllUserPending);
