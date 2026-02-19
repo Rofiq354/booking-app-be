@@ -37,6 +37,7 @@ export const editField = async (
   name: string,
   description: string | null,
   price: number,
+  image: string | null,
 ) => {
   const field = await prisma.field.findUnique({
     where: { id },
@@ -50,13 +51,9 @@ export const editField = async (
       name,
       description,
       price,
+      image,
     },
   });
 
-  return {
-    id: editField.id,
-    name: editField.name,
-    description: editField.description,
-    price: editField.price,
-  };
+  return editField;
 };

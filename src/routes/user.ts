@@ -6,7 +6,11 @@ import {
   userLogin,
   userLogout,
 } from "../controllers/user-auth";
-import { createBooking, userCancelBooking } from "../controllers/booking";
+import {
+  createBooking,
+  getUserBooking,
+  userCancelBooking,
+} from "../controllers/booking";
 import { isUser } from "../middlewares/authUser";
 
 const router = express.Router();
@@ -17,6 +21,7 @@ router.get("/me", authenticate, userLogin);
 router.post("/user/logout", authenticate, userLogout);
 
 // booking
+router.get("/booking/userBookings", authenticate, getUserBooking);
 router.post("/booking", authenticate, isUser, createBooking);
 router.patch("/booking/:id/cancel", authenticate, isUser, userCancelBooking);
 

@@ -118,6 +118,44 @@ export const rejectBooking = async (
   }
 };
 
+export const getUserBooking = async (
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction,
+) => {
+  const userId = req.user?.id;
+  if (!userId) {
+    return res.status(400).json({
+      code: 400,
+      status: "error",
+      message: "Invalid user id",
+    });
+  }
+  try {
+    const userBooking = await prisma.booking.findMany({
+      where: { user: { id: userId } },
+      orderBy: { createdAt: "desc" },
+      include: {
+        user: { select: { name: true } },
+        field: {
+          select: {
+            name: true,
+            price: true,
+            image: true,
+          },
+        },
+      },
+    });
+    res.status(200).json({
+      status: "success",
+      message: "Get User Booking Successfully",
+      data: userBooking,
+    });
+  } catch (error) {
+    next(new AppError("Failed to get User Booking", 500));
+  }
+};
+
 export const userCancelBooking = async (
   req: AuthRequest,
   res: Response,

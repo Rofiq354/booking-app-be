@@ -33,7 +33,13 @@ router.post(
   handleCreateField,
 );
 router.get("/field", authenticate, isAdmin, getAllField);
-router.put("/field/:id", authenticate, isAdmin, updateField);
+router.put(
+  "/field/:id",
+  authenticate,
+  isAdmin,
+  upload.single("image"),
+  updateField,
+);
 router.delete("/field/:id", authenticate, isAdmin, deleteField);
 
 // time

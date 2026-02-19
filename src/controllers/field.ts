@@ -73,29 +73,49 @@ export const updateField = async (
 ) => {
   try {
     const id = Number(req.params.id);
-    if (isNaN(id)) {
-      return next(new AppError("Invalid Field id", 401));
-    }
+    if (isNaN(id)) return next(new AppError("Invalid Field id", 400));
+
+    const existingField = await prisma.field.findUnique({ where: { id } });
+    if (!existingField) return next(new AppError("Field not found", 404));
 
     const { name, description, price } = req.body;
-    if (!name || price === undefined) {
-      return next(new AppError("name and price are required", 400));
+
+    let imageUrl = existingField.image;
+
+    if (req.file) {
+      const uploadPromise = new Promise((resolve, reject) => {
+        const uploadStream = cloudinary.uploader.upload_stream(
+          { folder: "fields" },
+          (error, result) => {
+            if (error) reject(error);
+            else resolve(result?.secure_url);
+          },
+        );
+        uploadStream.end(req.file!.buffer);
+      });
+
+      imageUrl = (await uploadPromise) as string;
     }
 
-    const edit = await editField(id, name, description ?? null, price);
+    const edit = await editField(
+      id,
+      name,
+      description ?? null,
+      price,
+      imageUrl,
+    );
 
     res.status(200).json({
       status: "success",
-      message: "Edit Field Successfull",
+      message: "Edit Field Successful",
       data: edit,
     });
   } catch (error) {
-    if (error instanceof AppError) {
-      next(error);
-    } else {
-      console.error(error);
-      next(new AppError("Failed to Edit Field", 500));
-    }
+    next(
+      error instanceof AppError
+        ? error
+        : new AppError("Failed to Edit Field", 500),
+    );
   }
 };
 
