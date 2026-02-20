@@ -7,13 +7,12 @@ export const createTimeSlots = async (
   endHour: number,
   date: Date,
 ) => {
-  //Validasi jam operasional
   if (startHour >= endHour) {
     throw new AppError("startHour must be earlier than endHour", 400);
   }
 
   const slotsData = [];
-  // Loop untuk generate data slot per jam
+
   for (let hour = startHour; hour < endHour; hour++) {
     const startTime = new Date(date);
     startTime.setHours(hour, 0, 0, 0);
@@ -29,7 +28,6 @@ export const createTimeSlots = async (
     skipDuplicates: true,
   });
 
-  // Ambil semua slot (lama + baru)
   const slots = await prisma.timeSlot.findMany({
     where: { fieldId },
     orderBy: { startTime: "asc" },
@@ -37,19 +35,23 @@ export const createTimeSlots = async (
       id: true,
       startTime: true,
       endTime: true,
-      booking: {
+      bookings: {
         select: { id: true, status: true, userId: true },
       },
     },
   });
 
-  return slots.map((slot) => ({
-    id: slot.id,
-    startTime: slot.startTime,
-    endTime: slot.endTime,
-    booked: slot.booking ? true : false,
-    bookingId: slot.booking?.id || null,
-  }));
+  return slots.map((slot) => {
+    const activeBooking = slot.bookings.find((b) => b.status !== "CANCELLED");
+
+    return {
+      id: slot.id,
+      startTime: slot.startTime,
+      endTime: slot.endTime,
+      booked: !!activeBooking,
+      bookingId: activeBooking?.id || null,
+    };
+  });
 };
 
 export const getFieldTimeSlots = async (fieldId: number) => {
@@ -60,15 +62,19 @@ export const getFieldTimeSlots = async (fieldId: number) => {
       id: true,
       startTime: true,
       endTime: true,
-      booking: { select: { id: true } },
+      bookings: { select: { id: true, status: true } },
     },
   });
 
-  return slots.map((slot) => ({
-    id: slot.id,
-    startTime: slot.startTime,
-    endTime: slot.endTime,
-    booked: slot.booking ? true : false,
-    bookingId: slot.booking?.id || null,
-  }));
+  return slots.map((slot) => {
+    const activeBooking = slot.bookings.find((b) => b.status !== "CANCELLED");
+
+    return {
+      id: slot.id,
+      startTime: slot.startTime,
+      endTime: slot.endTime,
+      booked: !!activeBooking,
+      bookingId: activeBooking?.id || null,
+    };
+  });
 };

@@ -59,9 +59,11 @@ model Review {
   comment   String?
   userId    Int
   fieldId   Int
+  bookingId Int      @unique
   
   user      User     @relation(fields: [userId], references: [id])
   field     Field    @relation(fields: [fieldId], references: [id])
+  booking   Booking  @relation(fields: [bookingId], references: [id])
 
   createdAt DateTime @default(now())
 }
@@ -73,7 +75,7 @@ model TimeSlot {
   endTime   DateTime
 
   field     Field    @relation(fields: [fieldId], references: [id], onDelete: Cascade)
-  booking   Booking?
+  bookings Booking[]
 
   createdAt DateTime @default(now())
 
@@ -84,12 +86,14 @@ model Booking {
   id        Int           @id @default(autoincrement())
   userId    Int
   fieldId   Int
-  slotId    Int           @unique
+  slotId    Int           
   status    BookingStatus @default(PENDING)
 
   user      User          @relation(fields: [userId], references: [id])
   field     Field         @relation(fields: [fieldId], references: [id])
   slot      TimeSlot      @relation(fields: [slotId], references: [id])
+
+  review    Review?
 
   createdAt DateTime      @default(now())
   updatedAt DateTime      @updatedAt

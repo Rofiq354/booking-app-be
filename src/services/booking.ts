@@ -6,11 +6,13 @@ export const bookingField = async (
   fieldId: number,
   slotId: number,
 ) => {
-  const slot = await prisma.timeSlot.findUnique({ where: { id: slotId } });
+  const slot = await prisma.timeSlot.findUnique({
+    where: { id: slotId },
+  });
   if (!slot) throw new AppError("Slot not found", 404);
 
-  const existingBooking = await prisma.booking.findUnique({
-    where: { slotId },
+  const existingBooking = await prisma.booking.findFirst({
+    where: { slotId, status: { in: ["PENDING", "CONFIRMED"] } },
   });
   if (existingBooking) throw new AppError("Slot already booked", 400);
 
@@ -24,6 +26,7 @@ export const bookingField = async (
       slot: { select: { id: true, startTime: true, endTime: true } },
     },
   });
+
   return createBooking;
 };
 

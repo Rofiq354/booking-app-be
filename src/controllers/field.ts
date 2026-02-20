@@ -46,7 +46,7 @@ export const getAllField = async (
   next: NextFunction,
 ) => {
   try {
-    const field = await prisma.field.findMany({
+    const fields = await prisma.field.findMany({
       orderBy: { createdAt: "desc" },
       select: {
         id: true,
@@ -55,12 +55,35 @@ export const getAllField = async (
         price: true,
         slots: true,
         image: true,
+        reviews: {
+          select: {
+            rating: true,
+          },
+        },
       },
+    });
+
+    const fieldsWithRating = fields.map((field) => {
+      const totalReviews = field.reviews.length;
+      const avgRating =
+        totalReviews > 0
+          ? field.reviews.reduce((acc, curr) => acc + curr.rating, 0) /
+            totalReviews
+          : 0;
+
+      // Hapus array 'reviews' agar payload JSON lebih bersih
+      const { reviews, ...fieldData } = field;
+
+      return {
+        ...fieldData,
+        averageRating: parseFloat(avgRating.toFixed(1)),
+        totalReviews: totalReviews,
+      };
     });
     res.status(200).json({
       status: "success",
       message: "Get all Field",
-      data: field,
+      data: fieldsWithRating,
     });
   } catch (error) {
     next(new AppError("Failed to display all fields", 500));
@@ -156,12 +179,38 @@ export const getDetailField = async (
         slots: {
           orderBy: { startTime: "asc" },
         },
+        reviews: {
+          include: {
+            user: {
+              select: { name: true },
+            },
+          },
+          orderBy: { createdAt: "desc" },
+        },
       },
     });
+
+    if (!field) return next(new AppError("Field not found", 404));
+
+    const totalReviews = field.reviews.length;
+
+    // Hitung rata-rata rating
+    const averageRating =
+      totalReviews > 0
+        ? field.reviews.reduce((acc, curr) => acc + curr.rating, 0) /
+          totalReviews
+        : 0;
+
     res.status(200).json({
       status: "success",
       message: "Get detail field successfully",
-      data: field,
+      data: {
+        ...field,
+        ratingStats: {
+          average: parseFloat(averageRating.toFixed(1)),
+          total: totalReviews,
+        },
+      },
     });
   } catch (error) {
     next(new AppError("failed to get detail field", 500));
