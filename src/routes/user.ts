@@ -24,7 +24,7 @@ router.get("/me", authenticate, userLogin);
 router.post("/user/logout", authenticate, userLogout);
 
 // booking
-router.get("/booking/userBookings", authenticate, getUserBooking);
+router.get("/detail-booking", authenticate, getUserBooking);
 router.post("/booking", authenticate, isUser, createBooking);
 router.patch("/booking/:id/cancel", authenticate, isUser, userCancelBooking);
 
