@@ -15,6 +15,7 @@ import { isUser } from "../middlewares/authUser";
 import { getAllField, getDetailField } from "../controllers/field";
 import { getSlotsController } from "../controllers/time-slots";
 import { createReview } from "../controllers/rating";
+import { getHeroStats } from "../controllers/stats";
 
 const router = express.Router();
 
@@ -37,5 +38,8 @@ router.get("/timeslot/:fieldId", getSlotsController);
 
 //rating
 router.post("/review", authenticate, createReview);
+
+// Hero Stats
+router.get("/stats/hero", getHeroStats);
 
 export default router;
