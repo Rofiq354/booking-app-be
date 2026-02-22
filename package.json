@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "ts-node-dev src/app.ts",
     "build": "npx prisma generate && tsc",
+    "start": "node dist/app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "prisma": {
