@@ -23,7 +23,7 @@ import upload from "../middlewares/upload";
 const router = express.Router();
 
 router.get("/admin", authenticate, isAdmin, handleGetAdmins);
-router.post("/admin/create", authenticate, isAdmin, handleCreateAdmin);
+router.post("/create", authenticate, isAdmin, handleCreateAdmin);
 // field
 router.post(
   "/field",
@@ -46,7 +46,7 @@ router.delete("/field/:id", authenticate, isAdmin, deleteField);
 router.post("/timeslot/:fieldId", authenticate, isAdmin, createSlotsController);
 
 // booking
-router.get("/user/pending", authenticate, isAdmin, getAllUserPending);
+router.get("/user-pending", authenticate, isAdmin, getAllUserPending);
 router.get("/booking", authenticate, isAdmin, getAllBooking);
 router.patch("/booking/:id/approve", authenticate, isAdmin, approveBooking);
 router.patch("/booking/:id/cancel", authenticate, isAdmin, rejectBooking);

@@ -33,7 +33,7 @@ router.get("/field", getAllField);
 router.get("/field/:id", getDetailField);
 
 //time
-router.get("/timeslot/:fieldId", authenticate, getSlotsController);
+router.get("/timeslot/:fieldId", getSlotsController);
 
 //rating
 router.post("/review", authenticate, createReview);
