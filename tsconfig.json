@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es2020",
+    "target": "es2016",
     "module": "commonjs",
     "rootDir": "./src",
     "outDir": "./dist" /* Ini wajib: Semua file .ts jadi .js di sini */,
